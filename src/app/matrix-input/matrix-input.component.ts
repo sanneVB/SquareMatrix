@@ -11,62 +11,73 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './matrix-input.component.scss'
 })
 export class MatrixInputComponent {
-
-  matrixRows: number[][] = [];
-  showNError = false; 
-  answer!: number ;
-  failedLengthCheck!: boolean;
-  failedIntegerCheck!: boolean;
-  failedIntegerSizeCheck!: boolean;
+  matrixSize!: number;
+  answer!: number;
+  showNError!: boolean; 
+  showMatrixResults!: boolean;
+  passedHeightCheck!: boolean;
+  passedLengthCheck!: boolean;
+  passedIntegerCheck!: boolean;
+  passedIntegerSizeCheck!: boolean;
+  leftToRight!: number[];
+  rightToLeft!: number[];
+  leftToRightSum!: number;
+  rightToLeftSum!: number;
   
-
   setSize(form: NgForm) {
-    this.matrixRows = [];
-    this.showNError = false;
-    if (form.value.n > 1 ){
+      if (form.value.n > 1 && Number.isInteger(form.value.n)){
+      this.matrixSize = form.value.n;
       this.showNError = false;
-      for (let i = 0; i < form.value.n; i++) {
-        this.matrixRows.push([]);
-      }
+      this.matrixValidate(form);
     } else {
       this.showNError = true;
     }
   };
 
-  integerCheck(seperatedString: string[]): boolean {
-    return seperatedString.every(entry => !isNaN(Number(entry)) && Number.isInteger(Number(entry)));
+  heightCheck(seperateRows: string[], size: number) {
+    return seperateRows.length === size;
+  }
+
+  integerCheck(seperateStrings: string[]): boolean {
+    return seperateStrings.every(entry => !isNaN(Number(entry)) && Number.isInteger(Number(entry)));
   };
 
-  lengthCheck(seperatedString: string[]): boolean {
-    return seperatedString.length === this.matrixRows.length;
+  integerSizeCheck(seperateStrings: string[]): boolean {
+    return seperateStrings.every(entry => (Number(entry) > -100) && (Number(entry) < 100));
   };
 
-  integerSizeCheck(seperatedString: string[]): boolean {
-    return seperatedString.every(entry => (Number(entry) > -100) && (Number(entry) < 100));
+  lengthCheck(seperateStrings: string[], size: number): boolean {
+    return seperateStrings.length === size;
   };
 
   calculateSum(numbers: number[]): number{
     return numbers.reduce(((accumulator, currentValue) => accumulator + currentValue), 0);
   };
 
-  matrixSubmit(form: NgForm) {
-    // this.hideRowLengthError = true;
-    // this.hideIntegerError = true;
-    // this.hideIntegerSizeError = true;
-    const leftToRight: number[] = [];
-    const rightToLeft: number[] = [];
-    for (const rowNumber in form.value) {
-      const seperatedRow = form.value[rowNumber].split(" ").filter((str: string) => str.length > 0); 
-      //Filter is needed in case the string ends with a space. Otherwise an empty entry would be added.
-      this.failedLengthCheck = !this.lengthCheck(seperatedRow);
-      this.failedIntegerCheck = !this.integerCheck(seperatedRow);
-      this.failedIntegerSizeCheck = !this.integerSizeCheck(seperatedRow);
-      if (!this.failedLengthCheck && !this.failedIntegerCheck && !this.failedIntegerSizeCheck) {
-        leftToRight.push(Number(seperatedRow[rowNumber]));
-        rightToLeft.push(Number(seperatedRow[(this.matrixRows.length - Number(rowNumber) - 1)]))
-      } 
-    }
-    this.answer = Math.abs(this.calculateSum(leftToRight) - this.calculateSum(rightToLeft))
-  }
-}
+  matrixValidate(form: NgForm) {
+    let seperatedRows = [];
+    let separatedEntries = [];
+    seperatedRows = form.value.matrix.split('\n');
+    separatedEntries = seperatedRows.map((row: string) => row.trim().split(' ').filter((entry: string) => entry.length > 0));
+    this.passedHeightCheck = this.heightCheck(separatedEntries, this.matrixSize);
+    this.passedIntegerCheck = separatedEntries.every(this.integerCheck);
+    this.passedIntegerSizeCheck = separatedEntries.every(this.integerSizeCheck);
+    this.passedLengthCheck = separatedEntries.every((element: string[]) => this.lengthCheck(element, this.matrixSize));
+    if (this.passedHeightCheck && this.passedIntegerCheck && this.passedIntegerSizeCheck && this.passedLengthCheck) {
+      this.showMatrixResults = true;
+      this.matrixCalculate(separatedEntries);
+    };
+  };
 
+  matrixCalculate(matrix: string[]) {
+    this.leftToRight = [];
+    this.rightToLeft = [];
+    for (const row in matrix) {
+      this.leftToRight.push(Number(matrix[row][row]));
+      this.rightToLeft.push(Number(matrix[row][(this.matrixSize - Number(row) - 1)]));
+    }
+    this.leftToRightSum = this.calculateSum(this.leftToRight);
+    this.rightToLeftSum = this.calculateSum(this.rightToLeft);
+    this.answer = Math.abs(this.leftToRightSum - this.rightToLeftSum);
+  };
+}
