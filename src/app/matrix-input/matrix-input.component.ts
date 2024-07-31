@@ -65,12 +65,18 @@ export class MatrixInputComponent {
     let seperatedRows = [];
     let separatedEntries = [];
     seperatedRows = form.value.matrix.split('\n');
-    console.log(seperatedRows)
-    separatedEntries = seperatedRows.map(this.processRow);
+    // console.log(seperatedRows)
+    separatedEntries = seperatedRows.map(this.processRow).filter((entry: string) => entry.length > 0);
+    console.log(separatedEntries)
     this.passedHeightCheck = this.heightCheck(separatedEntries, this.matrixSize);
     this.passedIntegerCheck = separatedEntries.every(this.integerCheck);
     this.passedIntegerSizeCheck = separatedEntries.every(this.integerSizeCheck);
     this.passedLengthCheck = separatedEntries.every((element: string[]) => this.lengthCheck(element, this.matrixSize));
+    console.log(this.showMatrixResults)
+    console.log(this.passedHeightCheck)
+    console.log(this.passedIntegerCheck)
+    console.log(this.passedIntegerSizeCheck)
+    console.log(this.passedLengthCheck)
     if (this.passedHeightCheck && this.passedIntegerCheck && this.passedIntegerSizeCheck && this.passedLengthCheck) {
       this.showMatrixResults = true;
       this.matrixCalculate(separatedEntries);
