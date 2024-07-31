@@ -18,5 +18,7 @@
 
   <button type="submit">Submit</button>
 </form>
-
-<p>Answer: {{ answer }}</p>
+@if (showRowLengthError) {<p>Please ensure that each row contains exactly {{matrixRows.length}} entries  </p>}
+@if (showIntegerError) {<p>Please ensure that each row contains only integers  </p>}
+@if (showIntegerSizeError) {<p>Please ensure that each integer is between -100 and 100.</p>}
+@if (!showRowLengthError && !showIntegerError && !showIntegerSizeError){<p>Answer: {{ answer }}</p>}

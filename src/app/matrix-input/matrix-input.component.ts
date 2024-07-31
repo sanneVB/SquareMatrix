@@ -14,7 +14,10 @@ export class MatrixInputComponent {
 
   matrixRows: number[][] = [];
   showNError = false; 
-  answer!: number 
+  answer!: number ;
+  showRowLengthError = false;
+  showIntegerError = false;
+  showIntegerSizeError = false;
   
 
   setSize(form: NgForm) {
@@ -28,46 +31,51 @@ export class MatrixInputComponent {
     } else {
       this.showNError = true;
     }
-  }
+  };
 
   integerCheck(seperatedString: string[]): boolean {
     return seperatedString.every(entry => !isNaN(Number(entry)) && Number.isInteger(Number(entry)));
-  }
+  };
 
   lengthCheck(seperatedString: string[]): boolean {
     return seperatedString.length === this.matrixRows.length;
-  }
+  };
+
+  integerSizeCheck(seperatedString: string[]): boolean {
+    return seperatedString.every(entry => (Number(entry) > -100) && (Number(entry) < 100));
+  };
 
   calculateSum(numbers: number[]): number{
     return numbers.reduce(((accumulator, currentValue) => accumulator + currentValue), 0);
-  }
+  };
 
   matrixSubmit(form: NgForm) {
+    this.showRowLengthError = false;
+    this.showIntegerError = false;
+    this.showIntegerSizeError = false;
     const leftToRight: number[] = [];
     const rightToLeft: number[] = [];
     for (const rowNumber in form.value) {
       const seperatedRow = form.value[rowNumber].split(" ").filter((str: string) => str.length > 0); 
       //Filter is needed in case the string ends with a space. Otherwise an empty entry would be added.
-      if (this.integerCheck(seperatedRow) && this.lengthCheck(seperatedRow)) {
-        console.log(rowNumber);
-        console.log(seperatedRow);
-        console.log(seperatedRow[rowNumber]);
-        console.log((this.matrixRows.length - Number(rowNumber)));
+      
+      if (this.integerCheck(seperatedRow) && this.lengthCheck(seperatedRow) && this.integerSizeCheck(seperatedRow)) {
         leftToRight.push(Number(seperatedRow[rowNumber]));
         rightToLeft.push(Number(seperatedRow[(this.matrixRows.length - Number(rowNumber) - 1)]))
+      } else if (!this.integerCheck((seperatedRow)) && !this.lengthCheck(seperatedRow) && !this.integerSizeCheck(seperatedRow)) {
+        this.showRowLengthError = true;
+        this.showIntegerError = true;
+        this.showIntegerSizeError = true;
       }
-      
-      // console.log(seperatedRow);
-      // console.log(this.integerCheck(seperatedRow));
-      // console.log(this.lengthCheck(seperatedRow));
-      console.log(leftToRight);
-      console.log(rightToLeft);
+        else if (this.integerCheck(seperatedRow) && !this.lengthCheck(seperatedRow)) {
+        this.showRowLengthError = true;
+      } else if (!this.integerCheck(seperatedRow) && this.lengthCheck(seperatedRow)) {
+        this.showIntegerError = true;
+      } else if (!this.integerSizeCheck(seperatedRow)) {
+        this.showIntegerSizeError = true;
+      }
     }
-    // const leftToRightSum = leftToRight.reduce(((acc, cur) => acc + cur), 0);
-    console.log(this.calculateSum(leftToRight));
-    console.log(this.calculateSum(rightToLeft));
     this.answer = Math.abs(this.calculateSum(leftToRight) - this.calculateSum(rightToLeft))
-    // console.log(this.matrixRows.length)
   }
 }
 
