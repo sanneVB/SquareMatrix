@@ -15,9 +15,9 @@ export class MatrixInputComponent {
   matrixRows: number[][] = [];
   showNError = false; 
   answer!: number ;
-  showRowLengthError = false;
-  showIntegerError = false;
-  showIntegerSizeError = false;
+  failedLengthCheck!: boolean;
+  failedIntegerCheck!: boolean;
+  failedIntegerSizeCheck!: boolean;
   
 
   setSize(form: NgForm) {
@@ -50,30 +50,21 @@ export class MatrixInputComponent {
   };
 
   matrixSubmit(form: NgForm) {
-    this.showRowLengthError = false;
-    this.showIntegerError = false;
-    this.showIntegerSizeError = false;
+    // this.hideRowLengthError = true;
+    // this.hideIntegerError = true;
+    // this.hideIntegerSizeError = true;
     const leftToRight: number[] = [];
     const rightToLeft: number[] = [];
     for (const rowNumber in form.value) {
       const seperatedRow = form.value[rowNumber].split(" ").filter((str: string) => str.length > 0); 
       //Filter is needed in case the string ends with a space. Otherwise an empty entry would be added.
-      
-      if (this.integerCheck(seperatedRow) && this.lengthCheck(seperatedRow) && this.integerSizeCheck(seperatedRow)) {
+      this.failedLengthCheck = !this.lengthCheck(seperatedRow);
+      this.failedIntegerCheck = !this.integerCheck(seperatedRow);
+      this.failedIntegerSizeCheck = !this.integerSizeCheck(seperatedRow);
+      if (!this.failedLengthCheck && !this.failedIntegerCheck && !this.failedIntegerSizeCheck) {
         leftToRight.push(Number(seperatedRow[rowNumber]));
         rightToLeft.push(Number(seperatedRow[(this.matrixRows.length - Number(rowNumber) - 1)]))
-      } else if (!this.integerCheck((seperatedRow)) && !this.lengthCheck(seperatedRow) && !this.integerSizeCheck(seperatedRow)) {
-        this.showRowLengthError = true;
-        this.showIntegerError = true;
-        this.showIntegerSizeError = true;
-      }
-        else if (this.integerCheck(seperatedRow) && !this.lengthCheck(seperatedRow)) {
-        this.showRowLengthError = true;
-      } else if (!this.integerCheck(seperatedRow) && this.lengthCheck(seperatedRow)) {
-        this.showIntegerError = true;
-      } else if (!this.integerSizeCheck(seperatedRow)) {
-        this.showIntegerSizeError = true;
-      }
+      } 
     }
     this.answer = Math.abs(this.calculateSum(leftToRight) - this.calculateSum(rightToLeft))
   }
