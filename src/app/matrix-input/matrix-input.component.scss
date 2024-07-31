@@ -1,0 +1,64 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.task__heading {
+  text-align: center;
+}
+
+.task {
+  display:flex;
+  max-width: 60vw;
+}
+
+.task__text {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+p {
+  margin: 0;
+}
+
+.task__example-matrix{
+  display: block;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.task__example--calculation {
+  align-self: center;
+}
+
+label {
+  margin-bottom: 5px
+}
+
+textarea {
+  min-height: 120px;
+  padding: 5px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+// .task__warning {
+//   visibility: hidden;
+// }
+
+// .task__input--calculation.hidden {
+//   visibility: hidden;
+//   height: 100px; /* Match the expected height with content */
+// }
+
+.solution {
+  width: 60vw;
+  padding: 20px;
+  text-align: center;
+}

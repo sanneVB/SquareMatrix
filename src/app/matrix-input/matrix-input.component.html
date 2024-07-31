@@ -1,28 +1,82 @@
-<h1>Large Input Field</h1>
-<h3>Problem:</h3>
-<p>Given a square matrix, calculate the absolute difference between the sums of its diagonals.</p>
-<p>1 2 3 <br>
-  4 5 6 <br>
-  9 8 9</p>
-<form #matrixSizeForm="ngForm" (ngSubmit)="setSize(matrixSizeForm)">
-  <label for="matrixSize">Matrix width atnd height: </label>
-  <input type="number" id="n" name="n" ngModel required placeholder="Enter a positive integer">
-  <br>
-  <label for="matrix" id="matrixLabel">Matrix:</label> 
-  <textarea name="matrix" ngModel required></textarea>
-  <button type="submit">Submit</button>
+<div class="wrapper">
+  <h1 class="task__heading">Problem:</h1>
+  <div class="task">
+    <div class="task__text">
+      <p>Given a square matrix, calculate the absolute difference between the sums of its diagonals.</p>
   
-  @if (showNError) {<p>Please enter a valid integer larger than 1</p>} <!-- See if this can't be inferred from form value directly-->
-
-
-</form>
-@if (showMatrixResults){
-@if (!passedHeightCheck) {<p>Please ensure that there are exactly {{ matrixSize }} rows </p>}  
-@if (!passedIntegerCheck) {<p>Please ensure that each row contains only integers  </p>}
-@if (!passedIntegerSizeCheck && passedIntegerCheck) {<p>Please ensure that each integer is between -100 and 100.</p>}
-@if (!passedLengthCheck) {<p>Please ensure that each row contains exactly the correct amount of entries  </p>}
-@if (passedHeightCheck && passedLengthCheck && passedIntegerCheck && passedIntegerSizeCheck){
-  <p>Left to Right Diagonal is: {{ leftToRight }} of which the sum is: {{ leftToRightSum }}</p>
-  <p>Right to Left Diagonal is: {{ rightToLeft }} of which the sum is: {{ rightToLeftSum }}</p>
-  <p>The absolute difference between {{ leftToRightSum }} and {{ rightToLeftSum }} is: {{answer}} </p>
-}}
+      <div class="task__example-matrix">
+      1 2 3 <br>
+        4 5 6 <br>
+        9 8 9
+      </div>
+      <div class="task__example--calculation">
+        <p>The left-to-right diagonal = 1 + 5 + 9 = 15. <br>
+          The right to left diagonal = 3 + 5 + 9 = 17. <br>
+          Their absolute difference is |15 - 17| = 2.
+        </p>
+      </div>
+    </div>
+    <div class="task__input">
+      <form #matrixSizeForm="ngForm" (ngSubmit)="setSize(matrixSizeForm)">
+        <label for="matrixSize">Matrix width and height: </label>
+        <input type="number" id="n" name="n" ngModel required placeholder="Enter a positive integer">
+        @if (showNError) {<p>Please enter a valid integer larger than 1</p>} <!-- See if this can't be inferred from form value directly-->
+        <br>
+        <label for="matrix" id="matrixLabel">Matrix:</label>
+        <textarea name="matrix" ngModel required placeholder="1 2 3&#10;4 5 6&#10;9 8 9"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+  <div class="solution">
+    <div>
+      @if (showMatrixResults){
+        @if (!passedHeightCheck) {
+          <p>Please ensure that there are exactly {{ matrixSize }} rows </p>
+        }
+        @if (!passedIntegerCheck) {
+          <p>Please ensure that each row contains only integers  </p>
+        }
+        @if (!passedIntegerSizeCheck && passedIntegerCheck) {
+          <p>Please ensure that each integer is between -100 and 100.</p>
+        }
+        @if (!passedLengthCheck) {
+          <p>Please ensure that each row contains exactly the correct amount of entries  </p>
+        }
+        @if (passedHeightCheck && passedLengthCheck && passedIntegerCheck && passedIntegerSizeCheck){
+          <p>
+            Left to Right Diagonal is: {{ leftToRight }} of which the sum is: {{ leftToRightSum }}
+          </p>
+          <p>
+            Right to Left Diagonal is: {{ rightToLeft }} of which the sum is: {{ rightToLeftSum }}
+          </p>
+          <p>
+            The absolute difference between {{ leftToRightSum }} and {{ rightToLeftSum }} is: {{answer}}
+          </p>
+        }
+      }
+    </div>
+  </div>
+</div>
+<!-- <div class="task__warnings">
+    <p class="task__warning task__warning--height" [ngClass]="{'visible': !passedHeightCheck}">Please ensure that there are exactly {{ matrixSize }} rows </p>
+    
+    <p class="task__warning task__warning--integer" [ngClass]="{'visible': !passedIntegerCheck}">Please ensure that each row contains only integers  </p>
+    
+    <p class="task__warning task__warning--integer-size" [ngClass]="{'visible': (!passedIntegerSizeCheck && passedIntegerCheck)}">Please ensure that each integer is between -100 and 100.</p>
+    
+    <p class="task__warning task__warning--length" [ngClass]="{'visible': !passedLengthCheck}">Please ensure that each row contains exactly the correct amount of entries  </p>
+  </div>
+  <div class="task__input--calculation" [ngClass]="{'hidden': !showMatrixResults}">
+    
+    @if (passedHeightCheck && passedLengthCheck && passedIntegerCheck && passedIntegerSizeCheck){
+      <p>
+        Left to Right Diagonal is: {{ leftToRight }} of which the sum is: {{ leftToRightSum }}
+      </p>
+      <p>
+        Right to Left Diagonal is: {{ rightToLeft }} of which the sum is: {{ rightToLeftSum }}
+      </p>
+      <p>
+        The absolute difference between {{ leftToRightSum }} and {{ rightToLeftSum }} is: {{answer}}
+      </p>
+      }-->

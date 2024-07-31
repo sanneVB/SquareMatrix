@@ -54,11 +54,19 @@ export class MatrixInputComponent {
     return numbers.reduce(((accumulator, currentValue) => accumulator + currentValue), 0);
   };
 
+  processRow(row: string): string[] {
+    return row
+      .trim()
+      .split(' ')
+      .filter((entry: string) => entry.length > 0)
+  }
+
   matrixValidate(form: NgForm) {
     let seperatedRows = [];
     let separatedEntries = [];
     seperatedRows = form.value.matrix.split('\n');
-    separatedEntries = seperatedRows.map((row: string) => row.trim().split(' ').filter((entry: string) => entry.length > 0));
+    console.log(seperatedRows)
+    separatedEntries = seperatedRows.map(this.processRow);
     this.passedHeightCheck = this.heightCheck(separatedEntries, this.matrixSize);
     this.passedIntegerCheck = separatedEntries.every(this.integerCheck);
     this.passedIntegerSizeCheck = separatedEntries.every(this.integerSizeCheck);
