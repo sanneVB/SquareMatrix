@@ -25,11 +25,8 @@ export class MatrixInputComponent {
   rightToLeftSum!: number;
   
   setSize(form: NgForm) {
-    console.log(form.value.n)
-    console.log(form.value.matrix)
-    console.log(`This is the type of form.value.matrix: ${typeof(form.value.matrix)}`)
       if (form.value.n > 1 && Number.isInteger(form.value.n)){
-      this.matrixSize = form.value.n
+      this.matrixSize = form.value.n;
       this.showNError = false;
       this.matrixValidate(form);
     } else {
@@ -59,36 +56,28 @@ export class MatrixInputComponent {
 
   matrixValidate(form: NgForm) {
     let seperatedRows = [];
-    let separatedEntries = []
-    // console.log(this.matrixSize)
-    this.showMatrixResults = true
-    seperatedRows = form.value.matrix.split('\n')
-    console.log(seperatedRows)
-    separatedEntries = seperatedRows.map((row: string) => row.trim().split(' ').filter((entry: string) => entry.length > 0))
+    let separatedEntries = [];
+    seperatedRows = form.value.matrix.split('\n');
+    separatedEntries = seperatedRows.map((row: string) => row.trim().split(' ').filter((entry: string) => entry.length > 0));
     this.passedHeightCheck = this.heightCheck(separatedEntries, this.matrixSize);
     this.passedIntegerCheck = separatedEntries.every(this.integerCheck);
     this.passedIntegerSizeCheck = separatedEntries.every(this.integerSizeCheck);
-    this.passedLengthCheck = separatedEntries.every((element: string[]) => this.lengthCheck(element, this.matrixSize))
-    // console.log(this.matrixSize)
-    // console.log(separatedEntries.every(this.lengthCheck, this.matrixSize))
-    // console.log(seperatedRows)
+    this.passedLengthCheck = separatedEntries.every((element: string[]) => this.lengthCheck(element, this.matrixSize));
     if (this.passedHeightCheck && this.passedIntegerCheck && this.passedIntegerSizeCheck && this.passedLengthCheck) {
+      this.showMatrixResults = true;
       this.matrixCalculate(separatedEntries);
-    }
-  }
+    };
+  };
 
   matrixCalculate(matrix: string[]) {
     this.leftToRight = [];
     this.rightToLeft = [];
-    console.log(matrix)
     for (const row in matrix) {
       this.leftToRight.push(Number(matrix[row][row]));
-      this.rightToLeft.push(Number(matrix[row][(this.matrixSize - Number(row) - 1)]))
+      this.rightToLeft.push(Number(matrix[row][(this.matrixSize - Number(row) - 1)]));
     }
     this.leftToRightSum = this.calculateSum(this.leftToRight);
     this.rightToLeftSum = this.calculateSum(this.rightToLeft);
     this.answer = Math.abs(this.leftToRightSum - this.rightToLeftSum);
-  }
-
-
+  };
 }
