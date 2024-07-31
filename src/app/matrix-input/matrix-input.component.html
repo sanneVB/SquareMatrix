@@ -21,9 +21,10 @@
 @if (showMatrixResults){
 @if (!passedHeightCheck) {<p>Please ensure that there are exactly {{ matrixSize }} rows </p>}  
 @if (!passedIntegerCheck) {<p>Please ensure that each row contains only integers  </p>}
-@if (!passedIntegerSizeCheck) {<p>Please ensure that each integer is between -100 and 100.</p>}
+@if (!passedIntegerSizeCheck && passedIntegerCheck) {<p>Please ensure that each integer is between -100 and 100.</p>}
 @if (!passedLengthCheck) {<p>Please ensure that each row contains exactly the correct amount of entries  </p>}
 @if (passedHeightCheck && passedLengthCheck && passedIntegerCheck && passedIntegerSizeCheck){
-
-  <p>Answer: {{answer}} </p>
+  <p>Left to Right Diagonal is: {{ leftToRight }} of which the sum is: {{ leftToRightSum }}</p>
+  <p>Right to Left Diagonal is: {{ rightToLeft }} of which the sum is: {{ rightToLeftSum }}</p>
+  <p>The absolute difference between {{ leftToRightSum }} and {{ rightToLeftSum }} is: {{answer}} </p>
 }}
