@@ -11,15 +11,19 @@
   @if (showNError) {<p>Please enter a valid integer larger than 1</p>} <!-- See if this can't be inferred from form value directly-->
 </form> 
 <br>
-<form #matrixInputForm="ngForm" (ngSubmit)="matrixSubmit(matrixInputForm)">
+<form #matrixInputForm="ngForm" (ngSubmit)="matrixValidate(matrixInputForm)">
   @if (showMatrixInput) {
     <label for="matrix" id="matrixLabel">Matrix:</label> 
     <textarea name="matrix" ngModel required></textarea>
-    <!-- <input type="text" id="matrix" name="matrix" ngModel required> -->
     <button type="submit">Submit</button>
   }
 </form>
-@if (failedLengthCheck) {<p>Please ensure that each row contains exactly {{matrixRows.length}} entries  </p>}
-@if (failedIntegerCheck) {<p>Please ensure that each row contains only integers  </p>}
-@if (failedIntegerSizeCheck) {<p>Please ensure that each integer is between -100 and 100.</p>}
-@if (!failedLengthCheck && !failedIntegerCheck && !failedIntegerSizeCheck){<p>Answer: {{ answer }}</p>}
+@if (showMatrixResults){
+@if (!passedHeightCheck) {<p>Please ensure that there are exactly {{ matrixSize }} rows </p>}  
+@if (!passedIntegerCheck) {<p>Please ensure that each row contains only integers  </p>}
+@if (!passedIntegerSizeCheck) {<p>Please ensure that each integer is between -100 and 100.</p>}
+@if (!passedLengthCheck) {<p>Please ensure that each row contains exactly the correct amount of entries  </p>}
+@if (passedHeightCheck && passedLengthCheck && passedIntegerCheck && passedIntegerSizeCheck){
+
+  <p>Answer: {{answer}} </p>
+}}

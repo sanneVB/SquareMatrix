@@ -11,76 +11,80 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './matrix-input.component.scss'
 })
 export class MatrixInputComponent {
-
-  matrixRows: string[][] = [];
+  matrixSize!: number;
+  answer!: number;
   showNError!: boolean; 
   showMatrixInput!: boolean;
-  answer!: number ;
-  failedLengthCheck!: boolean;
-  failedIntegerCheck!: boolean;
-  failedIntegerSizeCheck!: boolean;
+  showMatrixResults!: boolean;
+  passedHeightCheck!: boolean;
+  passedLengthCheck!: boolean;
+  passedIntegerCheck!: boolean;
+  passedIntegerSizeCheck!: boolean;
   
 
   setSize(form: NgForm) {
-    this.matrixRows = [];
-    if (form.value.n > 1 ){
+      if (form.value.n > 1 && Number.isInteger(form.value.n)){
+      this.matrixSize = form.value.n
       this.showNError = false;
       this.showMatrixInput = true;
-      for (let i = 0; i < form.value.n; i++) {
-        this.matrixRows.push([]);
-      }
     } else {
       this.showMatrixInput = false;
       this.showNError = true;
     }
   };
 
-  integerCheck(seperatedString: string[]): boolean {
-    return seperatedString.every(entry => !isNaN(Number(entry)) && Number.isInteger(Number(entry)));
+  heightCheck(seperateRows: string[], size: number) {
+    return seperateRows.length === size;
+  }
+
+  integerCheck(seperateStrings: string[]): boolean {
+    return seperateStrings.every(entry => !isNaN(Number(entry)) && Number.isInteger(Number(entry)));
   };
 
-  lengthCheck(seperatedString: string[]): boolean {
-    return seperatedString.length === this.matrixRows.length;
+  integerSizeCheck(seperateStrings: string[]): boolean {
+    return seperateStrings.every(entry => (Number(entry) > -100) && (Number(entry) < 100));
   };
 
-  integerSizeCheck(seperatedString: string[]): boolean {
-    return seperatedString.every(entry => (Number(entry) > -100) && (Number(entry) < 100));
+  lengthCheck(seperateStrings: string[], size: number): boolean {
+    return seperateStrings.length === size;
   };
+
+
+
 
   calculateSum(numbers: number[]): number{
     return numbers.reduce(((accumulator, currentValue) => accumulator + currentValue), 0);
   };
 
-  matrixSubmit(form: NgForm) {
-    const leftToRight: number[] = [];
-    const rightToLeft: number[] = [];
+  matrixValidate(form: NgForm) {
+    // console.log(this.matrixSize)
+    this.showMatrixResults = true
     const seperatedRows = form.value.matrix.split('\n');
-    const sepratedEntries = seperatedRows.map((row: string) => row.trim().split(' '))
-    console.log(sepratedEntries)
-    this.failedLengthCheck = !this.lengthCheck(sepratedEntries);
-    this.failedIntegerCheck = !this.integerCheck(sepratedEntries);
-    this.failedIntegerSizeCheck = !this.integerSizeCheck(sepratedEntries);
-    if (!this.failedLengthCheck && !this.failedIntegerCheck && !this.failedIntegerSizeCheck) {
-      leftToRight.push(Number(sepratedEntries[rowNumber]));
-      rightToLeft.push(Number(sepratedEntries[(this.matrixRows.length - Number(rowNumber) - 1)]))
+    const separatedEntries = seperatedRows.map((row: string) => row.trim().split(' '))
+    // console.log(separatedEntries)
+    this.passedHeightCheck = this.heightCheck(separatedEntries, this.matrixSize);
+    this.passedIntegerCheck = separatedEntries.every(this.integerCheck);
+    this.passedIntegerSizeCheck = separatedEntries.every(this.integerSizeCheck);
+    this.passedLengthCheck = separatedEntries.every((element: string[]) => this.lengthCheck(element, this.matrixSize))
+    // console.log(this.matrixSize)
+    // console.log(separatedEntries.every(this.lengthCheck, this.matrixSize))
+    // console.log(seperatedRows)
+    if (this.passedHeightCheck && this.passedIntegerCheck && this.passedIntegerSizeCheck && this.passedLengthCheck) {
+      this.matrixCalculate(separatedEntries);
     }
   }
 
-  // matrixSubmit(form: NgForm) {
-  //   const leftToRight: number[] = [];
-  //   const rightToLeft: number[] = [];
-  //   for (const rowNumber in form.value) {
-  //     const seperatedRow = form.value[rowNumber].split(" ").filter((str: string) => str.length > 0); 
-  //     //Filter is needed in case the string ends with a space. Otherwise an empty entry would be added.
-  //     this.failedLengthCheck = !this.lengthCheck(seperatedRow);
-  //     this.failedIntegerCheck = !this.integerCheck(seperatedRow);
-  //     this.failedIntegerSizeCheck = !this.integerSizeCheck(seperatedRow);
-  //     if (!this.failedLengthCheck && !this.failedIntegerCheck && !this.failedIntegerSizeCheck) {
-  //       leftToRight.push(Number(seperatedRow[rowNumber]));
-  //       rightToLeft.push(Number(seperatedRow[(this.matrixRows.length - Number(rowNumber) - 1)]))
-  //     } 
-  //   }
-  //   this.answer = Math.abs(this.calculateSum(leftToRight) - this.calculateSum(rightToLeft))
-  // }
+  matrixCalculate(matrix: string[]) {
+    const leftToRight: number[] = [];
+    const rightToLeft: number[] = [];
+    // console.log(matrix)
+    for (const row in matrix) {
+      leftToRight.push(Number(matrix[row][row]));
+      rightToLeft.push(Number(matrix[row][(this.matrixSize - Number(row) - 1)]))
+    }
+    this.answer = Math.abs(this.calculateSum(leftToRight) - this.calculateSum(rightToLeft))
+  }
+
+
 }
 
