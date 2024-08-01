@@ -44,16 +44,17 @@
         <p>Please ensure that each row contains exactly the correct amount of entries  </p>
       }
       @if (passedHeightCheck && passedLengthCheck && passedIntegerCheck && passedIntegerSizeCheck){
-      @if (showMatrixResults){  <p>
-          Left to Right Diagonal is: {{ leftToRight }} of which the sum is: {{ leftToRightSum }}
-        </p>
-        <p>
-          Right to Left Diagonal is: {{ rightToLeft }} of which the sum is: {{ rightToLeftSum }}
-        </p>
-        <p>
-          The absolute difference between {{ leftToRightSum }} and {{ rightToLeftSum }} is: {{answer}}
-        </p>
-      }
+        @if (showMatrixResults){  
+          <p>
+            Left to Right Diagonal is: {{ leftToRight }} of which the sum is: {{ leftToRightSum }}
+          </p>
+          <p>
+            Right to Left Diagonal is: {{ rightToLeft }} of which the sum is: {{ rightToLeftSum }}
+          </p>
+          <p>
+            The absolute difference between {{ leftToRightSum }} and {{ rightToLeftSum }} is: {{answer}}
+          </p>
+        }
       }
     </div>
   </div>
