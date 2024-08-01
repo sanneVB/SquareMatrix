@@ -15,10 +15,10 @@ export class MatrixInputComponent {
   answer!: number;
   showNError!: boolean; 
   showMatrixResults!: boolean;
-  passedHeightCheck!: boolean;
-  passedLengthCheck!: boolean;
-  passedIntegerCheck!: boolean;
-  passedIntegerSizeCheck!: boolean;
+  passedHeightCheck = true;
+  passedLengthCheck = true;
+  passedIntegerCheck = true;
+  passedIntegerSizeCheck = true;
   leftToRight!: number[];
   rightToLeft!: number[];
   leftToRightSum!: number;
